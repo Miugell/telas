@@ -19,4 +19,4 @@ if __name__ == "__main__":
     #! signal 'sucesso_login' for emitido
     meu_login.sucesso_login.connect(clientes_window.show)
     meu_login.show()
-    app.exec()
+    app.exec() 

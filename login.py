@@ -77,7 +77,7 @@ class LoginWindow(QMainWindow):
         #* Recebendo e gravando valores
         email = self.email_lineEdit.text() #pega o texto digitado
         senha = self.senha_lineEdit.text()
-        if email == "kleber@email.com" and senha == "klb123":
+        if email == "miguel@email.com" and senha == "miguel123":
             #Retorna verdadeiro
             return True
         else:
@@ -105,10 +105,3 @@ class LoginWindow(QMainWindow):
         # geometria ajustada, garantindo que ...
         #...a janela esteja centralizada na tela.
         self.move(qr.topLeft())
-
-
-app = QApplication()
-meu_login = LoginWindow() #! Objeto da classe que criamos 
-
-meu_login.show()
-app.exec()

@@ -5,7 +5,8 @@ from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QMainWindow, QTableWidget, QTableWidgetItem, 
     QPushButton, QVBoxLayout, QWidget, QLineEdit, QLabel, 
-    QSpinBox, QGridLayout, QMessageBox)
+    QSpinBox, QGridLayout, QMessageBox, QApplication)
+
 
 import qdarkstyle
 
@@ -23,6 +24,7 @@ class ClientesWindow(QMainWindow):
         self.lista_clientes = []
         #Vertical Layout
         v_layout = QVBoxLayout()
+        self.center_on_screen()
 
         #! Desenhando tabela
         self.table = QTableWidget(self)
@@ -62,7 +64,9 @@ class ClientesWindow(QMainWindow):
         self.ln_nome.setPlaceholderText("Digite um nome ")
         self.ln_email = QLineEdit()
         self.ln_email.setPlaceholderText("digite um email")
+        self.ln_email.returnPressed.connect(self.adicionar_cliente)
         self.sb_idade = QSpinBox()
+        
 
         #?Setando Font nos Inputs
         self.ln_nome.setFont(label_font)
@@ -80,6 +84,9 @@ class ClientesWindow(QMainWindow):
 
         #!Conectar signal aos slots
         self.btn_adicionar.clicked.connect(self.adicionar_cliente)
+        self.btn_deletar.clicked.connect(self.deletar_cliente)
+        
+        
         
         self.grid_layout = QGridLayout()
         self.grid_layout.addWidget(label_nome, 0, 0)
@@ -102,6 +109,18 @@ class ClientesWindow(QMainWindow):
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyside6())
 
     def adicionar_cliente(self):
+        if self.ln_nome.text() == "":
+            self.mostrar_erro("O nome do cliente não foi informado")
+            return
+
+        if self.ln_email.text() =="":
+            self.mostrar_erro("O email do cliente não foi informado")
+            return
+
+        if self.sb_idade.value() == 0:
+            self.mostrar_erro("A idade do cliente não foi informada")
+            return
+
         cliente = Cliente(
             self.ln_nome.text(),
             self.ln_email.text(),
@@ -109,8 +128,23 @@ class ClientesWindow(QMainWindow):
         )
         self.lista_clientes.append(cliente)
         self.limpar_campos()
+        self.atualizar_tabela()
         for c in self.lista_clientes:
             print(c.nome)
+
+    def deletar_cliente(self):
+        if self.table.currentRow() != -1:
+            del self.lista_clientes[self.table.currentRow()]
+            self.atualizar_tabela()
+
+    def atualizar_tabela(self):
+        self.table.setRowCount(len(self.lista_clientes))
+        for linha, cliente in enumerate(self.lista_clientes):
+            self.table.setItem(linha, 0, QTableWidgetItem(cliente.nome))
+            self.table.setItem(linha, 1, QTableWidgetItem(str(cliente.idade)))
+            self.table.setItem(linha, 2, QTableWidgetItem(cliente.email))
+ 
+
 
     #? Ao adicionar cliente irá limpar os campos
     def limpar_campos(self):
@@ -124,4 +158,14 @@ class ClientesWindow(QMainWindow):
         msgBox.setIcon(msgBox.Icon.Question)
         msgBox.exec()
 
+    def center_on_screen(self):
+       
+        qr = self.frameGeometry()
+        
+        cp = QApplication.primaryScreen().geometry().center()
+        
+        qr.moveCenter(cp)
+        
+        self.move(qr.topLeft())
+    
     #& Métodos úteis

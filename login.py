@@ -50,6 +50,8 @@ class LoginWindow(QMainWindow):
         self.email_lineEdit = QLineEdit()
         self.senha_label = QLabel("Senha:")
         self.senha_lineEdit = QLineEdit()
+        self.senha_lineEdit.returnPressed.connect(self.tentar_login)
+        self.email_lineEdit.returnPressed.connect(self.tentar_login)
         #! Ocultando a senha digitada
         self.senha_lineEdit.setEchoMode(QLineEdit.Password)
         #* Adicionando email e senha no LAYOUT 
